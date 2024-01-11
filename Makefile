@@ -49,23 +49,32 @@ test: env
 open:
 	open 'http://localhost:8080/internal'
 
-.PHONY: outdated
-## Shows outdated dependencies
-outdated:
+.PHONY: health
+## Shows outdated and used dependencies
+health:
 	@dep_updates=$$(mvn versions:display-dependency-updates | grep -e '->'); \
 	plugin_updates=$$(mvn versions:display-plugin-updates | grep -e '->'); \
 	prop_updates=$$(mvn -N versions:display-property-updates | grep -e '->'); \
+	dependency_analysis=$$(mvn dependency:analyze | grep -e '^\[WARNING\]'); \
 	if [ -n "$$dep_updates" ]; then \
 		echo "Dependency Updates:"; \
 		echo "$$dep_updates"; \
+		echo; \
 	fi; \
 	if [ -n "$$plugin_updates" ]; then \
 		echo "Plugin Updates:"; \
 		echo "$$plugin_updates"; \
+		echo; \
 	fi; \
 	if [ -n "$$prop_updates" ]; then \
 		echo "Property Updates:"; \
 		echo "$$prop_updates"; \
+		echo; \
+	fi; \
+	if [ -n "$$dependency_analysis" ]; then \
+		echo "Dependency Analysis Warnings:"; \
+		echo "$$dependency_analysis"; \
+		echo; \
 	fi
 
 .PHONY: clean
