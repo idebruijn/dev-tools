@@ -52,21 +52,7 @@ open:
 .PHONY: outdated
 ## Shows outdated dependencies
 outdated:
-	@dep_updates=$$(mvn versions:display-dependency-updates | grep -e '->'); \
-	plugin_updates=$$(mvn versions:display-plugin-updates | grep -e '->'); \
-	prop_updates=$$(mvn -N versions:display-property-updates | grep -e '->'); \
-	if [ -n "$$dep_updates" ]; then \
-		echo "Dependency Updates:"; \
-		echo "$$dep_updates"; \
-	fi; \
-	if [ -n "$$plugin_updates" ]; then \
-		echo "Plugin Updates:"; \
-		echo "$$plugin_updates"; \
-	fi; \
-	if [ -n "$$prop_updates" ]; then \
-		echo "Property Updates:"; \
-		echo "$$prop_updates"; \
-	fi
+	mvn -N versions:display-property-updates | grep -e '->'
 
 .PHONY: clean
 ## Removes the docker environment and clears build files
