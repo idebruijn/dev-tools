@@ -57,7 +57,7 @@ outdated:
 .PHONY: clean
 ## Removes the docker environment and clears build files
 clean:
-	docker compose down
+	docker ps -q -a | xargs docker rm -f;
 	mvn clean
 
 .PHONY: fmt
