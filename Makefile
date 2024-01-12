@@ -55,7 +55,7 @@ health:
 	@dep_updates=$$(mvn versions:display-dependency-updates | grep -e '->'); \
 	plugin_updates=$$(mvn versions:display-plugin-updates | grep -e '->'); \
 	prop_updates=$$(mvn -N versions:display-property-updates | grep -e '->'); \
-	dependency_analysis=$$(mvn dependency:analyze | grep -e '^\[WARNING\]'); \
+	dependency_analysis=$$(mvn dependency:analyze | awk '/\[WARNING\] Used undeclared dependencies found:/,/^\[WARNING\]/' | sed '$$!d'); \
 	if [ -n "$$dep_updates" ]; then \
 		echo "Dependency Updates:"; \
 		echo "$$dep_updates"; \
