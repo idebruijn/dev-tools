@@ -1,0 +1,37 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+end_of_line = lf
+
+[*.{java,kt,kts,xml,js,jsx,css}]
+indent_size = 4
+
+[*.{kt,kts}]
+ktlint_code_style = intellij_idea
+ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_enum-entry-name-case = disabled
+ktlint_standard_annotation-spacing = disabled
+ktlint_standard_package-name = disabled
+ij_kotlin_allow_trailing_comma = true
+ij_kotlin_allow_trailing_comma_on_call_site = true
+ktlint_standard_max-line-length = disabled # ktlint_official style sets a max line length of 140, we want to be relaxed about the limit
+
+# Disable comment checks (cannot be done without disabling some requires rules)
+ktlint_standard_value-argument-comment = disabled
+ktlint_standard_value-parameter-comment = disabled
+# required rule
+ktlint_standard_argument-list-wrapping = disabled
+ktlint_standard_function-signature = disabled
+
+[**/test/**.{kt,kts}]
+# Allow names of unit tests to exceed the max_line_length when wrapped between backticks
+ktlint_ignore_back_ticked_identifier = true
+
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = unset
