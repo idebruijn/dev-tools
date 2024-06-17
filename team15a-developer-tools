@@ -1,0 +1,43 @@
+#   ------------------------------------------------------
+#   BOL.COM - TEAM 15a specific functions -- START
+#   ------------------------------------------------------
+
+# update team 15a dev tools for consistency
+function up_team15a() {
+  up_makefile
+  up_editorconfig
+  up_pre_commit
+}
+
+function docker_run_dev_tools() {
+  local file_url=$1
+  local output_file=$2
+  execute "docker run -it --rm -v \"$(pwd)\":/app -w /app alpine:latest sh -c \
+  'apk add --no-cache curl > /dev/null 2>&1 && curl -fL $file_url -o $output_file'"
+}
+function up_makefile() { docker_run_dev_tools "https://raw.githubusercontent.com/idebruijn/dev-tools/main/Makefile" "Makefile" }
+function up_editorconfig() { docker_run_dev_tools "https://raw.githubusercontent.com/idebruijn/dev-tools/main/.editorconfig" ".editorconfig" }
+function up_pre_commit() {
+    local URL="https://raw.githubusercontent.com/idebruijn/dev-tools/main/pre-commit"
+    local TARGET=".githooks/pre-commit"
+
+    echo "Downloading pre-commit hook script..."
+    docker_run_dev_tools "$URL" "$TARGET"
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to download script from $URL"
+        return 1
+    fi
+
+    echo "Setting executable permissions for $TARGET..."
+    chmod +x "$TARGET"
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to set executable permissions on $TARGET"
+        return 1
+    fi
+
+    echo "pre-commit hook setup complete."
+}
+
+#   ------------------------------------------------------
+#   BOL.COM - TEAM 15a specific functions -- END
+#   ------------------------------------------------------
