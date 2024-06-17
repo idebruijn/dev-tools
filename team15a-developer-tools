@@ -1,7 +1,3 @@
-#   ------------------------------------------------------
-#   BOL.COM - TEAM 15a specific functions -- START
-#   ------------------------------------------------------
-
 # update team 15a dev tools for consistency
 function up_team15a() {
   up_makefile
@@ -37,7 +33,3 @@ function up_pre_commit() {
 
     echo "pre-commit hook setup complete."
 }
-
-#   ------------------------------------------------------
-#   BOL.COM - TEAM 15a specific functions -- END
-#   ------------------------------------------------------
