@@ -2,17 +2,6 @@
 
 MINIMAL_VERSION="1.3.0"
 
-echo "Pre commit: Formats the code with ktlint (install with brew install ktlint) ..."
-echo ""
-ktlint -F "*/src/**/*.kt"
-
-KT_EXIT_CODE=$?
-
-if [ $KT_EXIT_CODE -ne 0 ]; then
-    echo "Error: 'ktlint -F \"*/src/**/*.kt\"' failed. Please fix the issues before committing."
-    exit 1
-fi
-
 # Check ktlint version
 KT_VERSION=$(ktlint -v | awk '{print $3}')
 
@@ -26,3 +15,14 @@ elif [[ "$KT_VERSION" > "$MINIMAL_VERSION" ]]; then
 fi
 
 echo "ktlint version: $KT_VERSION"
+
+echo "Pre commit: Formats the code with ktlint (install with brew install ktlint) ..."
+echo ""
+ktlint -F "*/src/**/*.kt"
+
+KT_EXIT_CODE=$?
+
+if [ $KT_EXIT_CODE -ne 0 ]; then
+    echo "Error: 'ktlint -F \"*/src/**/*.kt\"' failed. Please fix the issues before committing."
+    exit 1
+fi
