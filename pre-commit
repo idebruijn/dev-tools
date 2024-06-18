@@ -1,35 +1,36 @@
 #!/bin/bash
 
-MINIMAL_VERSION="1.3.0"
+# Get the latest stable version of ktlint
+LATEST_VERSION=$(brew info --json=v1 ktlint | jq -r '.[0].versions.stable')
 
 check_ktlint_version() {
     if ! command -v ktlint &> /dev/null; then
-        echo "Error: ktlint is not installed. Please install it with 'brew install ktlint'."
-        exit 1
+        echo "Installing ktlint..."
+        brew install ktlint
+    else
+        KT_VERSION=$(ktlint -v | awk '{print $3}')
+
+        if [[ "$KT_VERSION" != "$LATEST_VERSION" ]]; then
+            echo "Upgrading ktlint from version $KT_VERSION to $LATEST_VERSION..."
+            brew upgrade ktlint
+            KT_VERSION=$LATEST_VERSION
+        else
+            echo "ktlint is already the latest version: $KT_VERSION"
+            echo
+        fi
     fi
-
-    KT_VERSION=$(ktlint -v | awk '{print $3}')
-
-    # Compare versions
-    if [[ "$(printf '%s\n' "$MINIMAL_VERSION" "$KT_VERSION" | sort -V | head -n1)" != "$MINIMAL_VERSION" ]]; then
-        echo "Warning: Your ktlint version ($KT_VERSION) is lower than the minimal required version ($MINIMAL_VERSION). Upgrading..."
-        brew upgrade ktlint
-    elif [[ "$KT_VERSION" > "$MINIMAL_VERSION" ]]; then
-        echo -e "\e[33mWarning: Your ktlint version ($KT_VERSION) is higher than the minimal required version ($MINIMAL_VERSION)."
-        echo "This could result in different behavior. Consider upgrading the minimal version."
-    fi
-
-    echo "ktlint version: $KT_VERSION"
 }
 
 run_ktlint() {
+    local ktlint_command="ktlint -F '*/src/**/*.kt'"
     echo "Running ktlint to check code formatting..."
-    ktlint_output=$(ktlint -F "*/src/**/*.kt" 2>&1)
+    echo
+    ktlint_output=$($ktlint_command 2>&1)
     KT_EXIT_CODE=$?
 
     if [ $KT_EXIT_CODE -ne 0 ]; then
-        echo -e "\e[33mWarning: 'ktlint -F \"*/src/**/*.kt\"' found formatting issues."
-        echo "$ktlint_output"  # Print ktlint output for debugging
+        echo "Warning: 'ktlint -F \"*/src/**/*.kt\"' found formatting issues."
+        echo "$ktlint_output"
     else
         echo "No formatting issues found."
     fi
@@ -37,5 +38,3 @@ run_ktlint() {
 
 check_ktlint_version
 run_ktlint
-
-echo "Pre-commit checks completed."
