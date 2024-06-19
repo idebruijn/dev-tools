@@ -30,7 +30,8 @@ run_ktlint() {
     else
         echo "Error occurred during code formatting."
     fi
-
+    
+    # Check the status if code was formatted
     git status
 }
 
