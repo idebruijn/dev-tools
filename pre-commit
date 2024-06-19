@@ -24,15 +24,17 @@ check_ktlint_version() {
 run_ktlint() {
     local ktlint_command="ktlint -F '*/src/**/*.kt'"
     echo "Running ktlint to check code formatting..."
+    echo "Command: $ktlint_command"
     echo
-    ktlint_output=$($ktlint_command 2>&1)
+
+    ktlint_output=$(eval $ktlint_command 2>&1)
     KT_EXIT_CODE=$?
 
     if [ $KT_EXIT_CODE -ne 0 ]; then
         echo "Warning: 'ktlint -F \"*/src/**/*.kt\"' found formatting issues."
         echo "$ktlint_output"
     else
-        echo "No formatting issues found."
+        echo "Code formatted; No formatting issues found."
     fi
 }
 
