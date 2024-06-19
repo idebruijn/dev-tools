@@ -6,7 +6,7 @@ LATEST_VERSION=$(brew info --json=v1 ktlint | jq -r '.[0].versions.stable')
 check_ktlint_version() {
     if ! command -v ktlint &> /dev/null; then
         echo "Installing ktlint..."
-        brew install ktlint
+        HOMEBREW_NO_AUTO_UPDATE=1 brew install ktlint
     else
         KT_VERSION=$(ktlint -v | awk '{print $3}')
 
