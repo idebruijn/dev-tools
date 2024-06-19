@@ -27,12 +27,18 @@ run_ktlint() {
     # Run ktlint and capture any error
     if ktlint -F "*/src/**/*.kt"; then
         echo "Code formatted successfully."
+        formatted_files=$(git status --porcelain "*/src/**/*.kt" | wc -l)
+        if [ "$formatted_files" -eq 0 ]; then
+            echo "No changes detected after formatting."
+        else
+            echo "Changes detected after formatting:"
+            git status
+        fi
     else
         echo "Error occurred during code formatting."
+        git status
+        exit 1
     fi
-    
-    # Check the status if code was formatted
-    git status
 }
 
 check_ktlint_version
