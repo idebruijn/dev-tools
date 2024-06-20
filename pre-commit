@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Get the latest stable version of ktlint
-LATEST_VERSION=$(brew info --json=v1 ktlint | jq -r '.[0].versions.stable')
-
+# Check and update latest stable ktlint version
 check_ktlint_version() {
+    LATEST_VERSION=$(brew info --json=v1 ktlint | jq -r '.[0].versions.stable')
+
     if ! command -v ktlint &> /dev/null; then
         echo "Installing ktlint..."
         HOMEBREW_NO_AUTO_UPDATE=1 brew install ktlint
@@ -16,27 +16,30 @@ check_ktlint_version() {
             KT_VERSION=$LATEST_VERSION
         else
             echo "ktlint is already the latest version: $KT_VERSION"
-            echo
         fi
     fi
+    echo
 }
 
+# Run ktlint and stage formatted files
 run_ktlint() {
-    echo "Running ktlint to format code..."
-  
+    echo -e "\nRunning ktlint to format code...\n"
+
     ktlint -F "*/src/**/*.kt"
-    
-    # Check if any files were formatted
+
     formatted_files=$(git status --porcelain '*/src/**/*.kt' | wc -l)
     if [ "$formatted_files" -eq 0 ]; then
         echo "No changes detected after formatting."
     else
         echo "Changes detected after formatting:"
-        git status
+        git status --porcelain '*/src/**/*.kt' | awk '{print $2}' | xargs git add
+        echo "Staged changes for commit."
     fi
-    
-    echo "Code formatted successfully."
+
+    # Print success message
+    echo -e "\nCode formatted successfully.\n"
 }
 
+# Main execution
 check_ktlint_version
 run_ktlint
