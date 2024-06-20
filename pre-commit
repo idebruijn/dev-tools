@@ -24,7 +24,6 @@ check_ktlint_version() {
 # Run ktlint and stage formatted files
 run_ktlint() {
     echo -e "\nRunning ktlint to format code...\n"
-
     ktlint -F "*/src/**/*.kt"
 
     formatted_files=$(git status --porcelain '*/src/**/*.kt' | wc -l)
@@ -36,7 +35,6 @@ run_ktlint() {
         echo "Staged changes for commit."
     fi
 
-    # Print success message
     echo -e "\nCode formatted successfully.\n"
 }
 
