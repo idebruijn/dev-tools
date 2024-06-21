@@ -15,13 +15,12 @@ check_ktlint_version() {
             brew upgrade ktlint
             KT_VERSION=$LATEST_VERSION
         else
-            echo "ktlint is already the latest version: $KT_VERSION"
+            echo "ktlint is up-to-date with the latest version: $KT_VERSION"
         fi
     fi
-    echo
 }
 
-# Run ktlint and stage formatted files
+# Run ktlint and automatically stage formatted files
 run_ktlint() {
     echo -e "\nRunning ktlint to format code...\n"
     ktlint -F "*/src/**/*.kt"
@@ -38,6 +37,6 @@ run_ktlint() {
     echo -e "\nCode formatted successfully.\n"
 }
 
-# Main execution
+# Main
 check_ktlint_version
 run_ktlint
